@@ -18,4 +18,4 @@ Use Neo4J:
 
 To install other dependencies listed in `package.json`: `npm install`.
 
-
+Run the app: `node app`.
