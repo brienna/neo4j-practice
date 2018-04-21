@@ -1,23 +1,24 @@
 # Neomovies
 
 A simple application that lists nodes and relationships in a graph database and offers the following functionality:
-- Insert movie and person nodes
-- Set actor and director relationships
+- Insert movies and persons
+- View details for each movie and person
+- Set a person as an actor and/or director
 - Delete items
 - Update items
 - Find the shortest paths between two persons or two movies
 
 To install dependencies: `npm install`.
 
-Configure the following authentication info in app.js to use your Neo4j password:
+Configure the following authentication info in app.js to use your \*Neo4j password:
 ```
 // Connect to neo4j
 var driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'YOUR_PASSWORD_HERE'));
 ```
 
-Run the app: `node app`.
+\*This application assumes that Neo4j is running and that the sample movie database is already loaded. If this is not the case, please follow the instructions below.
 
-This application assumes that Neo4j is running and that the sample movie database is already loaded. If this is not the case, please follow the instructions below.
+Run the app: `node app`.
 
 ## Instructions
 

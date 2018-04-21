@@ -25,15 +25,23 @@ var session = driver.session();
 app.get('/', function(req, res) {
 	// Connect to database, get movies
 	session
-		.run('MATCH(n:Movie) RETURN n LIMIT 40')
+		.run('MATCH (p:Movie)-[r]-(q) return p, type(r), q')
 		.then(function(result) {
-			var movieArr = [];
+			var movieDict = {};
 			result.records.forEach(function(record) {
-				movieArr.push({
-					id: record._fields[0].identity.low,
-					title: record._fields[0].properties.title,
-					year: record._fields[0].properties.released
-				});
+				// Get each movie's title, relationship, and person
+				var title = record._fields[0].properties.title;
+				var year = record._fields[0].properties.released;
+				var relationship = record._fields[1];
+				var person = record._fields[2].properties.name;
+				var detail = person + " " + relationship;
+
+				// Add person info to obj
+				if (title in movieDict) {
+					movieDict[title].push(detail);
+				} else {
+					movieDict[title] = [detail];
+				}
 			});
 			// Connect to database, get persons
 			session
@@ -63,7 +71,7 @@ app.get('/', function(req, res) {
 
 					// Render view with movies and persons
 					res.render('index', {
-						movies: movieArr,
+						movies: movieDict,
 						persons: personDict
 					});
 				});

@@ -40,10 +40,16 @@
 </form>
 
 <h3>Movies</h3>
+<p>Click on a movie to show or hide details.</p>
 <ul>
-<% movies.forEach(function(movie) { %>
-	<li><%= movie.title %></li>
-<% }) %>
+<% Object.keys(movies).forEach(function(movie) { %>
+	<li><%= movie %></li>
+	<ul class="hide">
+		<% movies[movie].forEach(function(detail) { %>
+			<li><%= detail %></li>
+		<% }) %>
+	</ul>
+<% }); %>
 </ul>
 
 <h3>Persons</h3>
@@ -57,6 +63,7 @@
 		<% }) %>
 	</ul>
 <% }); %>
+</ul>
 
 <style>
 	.hide {
