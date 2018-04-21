@@ -58,7 +58,7 @@ app.get('/', function(req, res) {
 		});
 });
 
-// Action to take when user submits movie addition form
+// Action to take when user submits form to add movie
 app.post('/movie/add', function(req, res) {
 	var title = req.body.title; // from html input
 	var year = req.body.year; // from html input
@@ -66,7 +66,7 @@ app.post('/movie/add', function(req, res) {
 	// Connect to database, create movie with title and year
 	session
 		.run('CREATE (n:Movie {title: {titleParam}, released:{yearParam}}) RETURN n.title',
-			{titleParam: title, yearParam: year})
+			{ titleParam: title, yearParam: year })
 		.then(function(result) {
 			res.redirect('/');
 			session.close();
@@ -75,6 +75,39 @@ app.post('/movie/add', function(req, res) {
 			console.log(err);
 		});
 });
+
+// Action to take when user submits form to add person
+app.post('/person/add', function(req, res) {
+	var name = req.body.name; // from html input
+	
+	// Connect to database, create movie with title and year
+	session
+		.run('CREATE (n:Person {name: {nameParam}}) RETURN n.name',
+			{ nameParam: name })
+		.then(function(result) {
+			res.redirect('/');
+			session.close();
+		})
+		.catch(function(err) {
+			console.log(err);
+		});
+});
+
+// Action to take when user submits form to add actor
+app.post('/movie/actor/add',function(req,res) { 
+	var title = req.body.title;
+	var name = req.body.name;
+	session
+	.run('MATCH (p:Person {name:{nameParam}}),(m:Movie{title:{titleParam}}) MERGE (p)-[:ACTED_IN]-(m) RETURN p,m', { titleParam: title, nameParam: name })
+	.then(function(result) { 
+		res.redirect('/');
+		session.close();
+	})
+	.catch(function(err) { 
+		console.log(err)
+	});
+});
+
 
 // Serve app on port 3000
 app.listen(5000);
