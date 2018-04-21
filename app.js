@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect to neo4j
-var driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'neirage')); // ENTER YOUR PASSWORD HERE
+var driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'neirage')); // ENTER YOUR PASSWORD HERE, 'STUDENT' FOR LAB COMPUTERS
 var session = driver.session();
 
 // Set a route to home page
@@ -26,14 +26,21 @@ app.get('/', function(req, res) {
 	session
 		.run('MATCH(n:Movie) RETURN n LIMIT 25')
 		.then(function(result) {
+			var movieArr = [];
 			result.records.forEach(function(record) {
-				console.log(record);
+				movieArr.push({
+					id: record._fields[0].identity.low,
+					title: record._fields[0].properties.title,
+					year: record._fields[0].properties.released
+				});
+			});
+			res.render('index', {
+				movies: movieArr
 			});
 		})
 		.catch(function(err) {
 			console.log(err);
 		});
-	res.send('It still works'); // prints to Terminal, not web console
 });
 
 // Serve app on port 3000

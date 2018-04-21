@@ -48,6 +48,8 @@ MERGE (m)-[:FILMED_IN]->(x)
 
 You should receive output indicating that 3 labels, 3 nodes, 3 properties, and 6 relationships have been created.
 
+Set the password in app.js on line __ to your neo4j password. 
+
 To install other dependencies listed in `package.json`: `npm install`.
 
 Run the app: `node app`.
