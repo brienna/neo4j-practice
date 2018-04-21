@@ -93,7 +93,14 @@ app.post('/person/add', function(req, res) {
 		});
 });
 
-// Action to take when user submits form to add actor
+/*
+ * Action to take when user submits form to set actor
+ *
+ * Tested by setting 'Tom Hanks' as an actor in 'The Matrix'
+ * Both nodes already existed in the database
+ * Checked in Neo4j browser with the query
+ * MATCH (p:Person {name: 'Tom Hanks'})--(q) return p,q
+ */
 app.post('/movie/actor/add',function(req,res) { 
 	var title = req.body.title;
 	var name = req.body.name;
@@ -108,6 +115,27 @@ app.post('/movie/actor/add',function(req,res) {
 	});
 });
 
+/* 
+ * Action to take when user submits form to set director
+ *
+ * Tested by setting 'Tom Hanks' as director of 'Cloud Atlas' 
+ * Both nodes already existed in the database
+ * Checked in Neo4j browser with the query 
+ * MATCH (p:Person {name: 'Tom Hanks'})--(q) return p,q
+ */
+app.post('/movie/director/add',function(req,res) { 
+	var title = req.body.title;
+	var name = req.body.name;
+	session
+	.run('MATCH (p:Person {name:{nameParam}}),(m:Movie{title:{titleParam}}) MERGE (p)-[:DIRECTED]-(m) RETURN p,m', { titleParam: title, nameParam: name })
+	.then(function(result) { 
+		res.redirect('/');
+		session.close();
+	})
+	.catch(function(err) { 
+		console.log(err)
+	});
+});
 
 // Serve app on port 3000
 app.listen(5000);

@@ -9,7 +9,16 @@
 	<input type="submit" value="submit">
 </form>
 
-<h3>Add Actor</h3>
+<h3>Add Person</h3>
+<form method="post" action="/person/add">
+	<label>Person Name</label><br>
+	<input type="text" name="name">
+	<br><br>
+	<input type="submit" value="submit">
+</form>
+
+<h3>Set Actor</h3>
+<p>Set an ACTED_IN relationship between a person and a movie that both already exist in the database.</p>
 <form method="post" action="/movie/actor/add">
 	<label>Movie Title</label><br> 
 	<input type="text" name="title">
@@ -19,12 +28,15 @@
  	<input type="submit" value="submit"> 
 </form>
 
-<h3>Add Person</h3>
-<form method="post" action="/person/add">
-	<label>Person Name</label><br>
-	<input type="text" name="name">
-	<br><br>
-	<input type="submit" value="submit">
+<h3>Set Director</h3>
+<p>Set a DIRECTED relationship between a person and a movie that both already exist in the database.</p>
+<form method="post" action="/movie/director/add">
+	<label>Movie Title</label><br> 
+	<input type="text" name="title">
+	<br>
+	<label>Director Name</label><br> 
+	<input type="text" name="name"> <br><br>
+ 	<input type="submit" value="submit"> 
 </form>
 
 <h3>Movies</h3>
@@ -40,5 +52,3 @@
 	<li><%= person.name %></li>
 <% }) %>
 </ul>
-
-
