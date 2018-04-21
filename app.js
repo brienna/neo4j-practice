@@ -23,6 +23,7 @@ var session = driver.session();
 
 // Set a route to home page
 app.get('/', function(req, res) {
+	// Get movies
 	session
 		.run('MATCH(n:Movie) RETURN n LIMIT 25')
 		.then(function(result) {
@@ -34,11 +35,25 @@ app.get('/', function(req, res) {
 					year: record._fields[0].properties.released
 				});
 			});
-			res.render('index', {
-				movies: movieArr
-			});
-		})
-		.catch(function(err) {
+			// Get persons
+			session
+				.run('MATCH (n:Person) RETURN n LIMIT 25')
+				.then(function(result2) {
+					var personArr = [];
+					result2.records.forEach(function(record) {
+						personArr.push({
+							id: record._fields[0].identity.low,
+							name: record._fields[0].properties.name
+						});
+					});
+
+					// Render view with movies and persons
+					res.render('index', {
+						movies: movieArr,
+						persons: personArr
+					});
+				});
+		}).catch(function(err) {
 			console.log(err);
 		});
 });
