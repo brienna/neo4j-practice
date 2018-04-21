@@ -23,9 +23,9 @@ var session = driver.session();
 
 // Set a route to home page
 app.get('/', function(req, res) {
-	// Get movies
+	// Connect to database, get movies
 	session
-		.run('MATCH(n:Movie) RETURN n LIMIT 25')
+		.run('MATCH(n:Movie) RETURN n LIMIT 40')
 		.then(function(result) {
 			var movieArr = [];
 			result.records.forEach(function(record) {
@@ -35,9 +35,9 @@ app.get('/', function(req, res) {
 					year: record._fields[0].properties.released
 				});
 			});
-			// Get persons
+			// Connect to database, get persons
 			session
-				.run('MATCH (n:Person) RETURN n LIMIT 25')
+				.run('MATCH (n:Person) RETURN n LIMIT 40')
 				.then(function(result2) {
 					var personArr = [];
 					result2.records.forEach(function(record) {
@@ -54,6 +54,24 @@ app.get('/', function(req, res) {
 					});
 				});
 		}).catch(function(err) {
+			console.log(err);
+		});
+});
+
+// Action to take when user submits movie addition form
+app.post('/movie/add', function(req, res) {
+	var title = req.body.title; // from html input
+	var year = req.body.year; // from html input
+	
+	// Connect to database, create movie with title and year
+	session
+		.run('CREATE (n:Movie {title: {titleParam}, released:{yearParam}}) RETURN n.title',
+			{titleParam: title, yearParam: year})
+		.then(function(result) {
+			res.redirect('/');
+			session.close();
+		})
+		.catch(function(err) {
 			console.log(err);
 		});
 });
