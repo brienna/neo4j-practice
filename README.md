@@ -1,16 +1,19 @@
-Brienna Herold
-ISTE 610: Knowledge Representation Technologies
-Homework 4, part A
+# Neomovies
 
 A simple application that lists nodes and relationships in a graph database and offers the following functionality:
-- Insert actors and directors
+- Insert movie and person nodes
+- Set actor and director relationships
 - Delete items
 - Update items
 - Find the shortest paths between two persons or two movies
 
 To install dependencies: `npm install`.
 
-Configure the authentication info in app.js on line __ to use your Neo4j password.
+Configure the following authentication info in app.js to use your Neo4j password:
+```
+// Connect to neo4j
+var driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'YOUR_PASSWORD_HERE'));
+```
 
 Run the app: `node app`.
 
@@ -31,9 +34,12 @@ This was tested on Ubuntu 16.04.4 (with VMWare Fusion 8 and Mac OS X Sierra).
 
 ### Run Neo4j:
 
-1. Start Neo4j via Terminal: `sudo neo4j start`. You may see the warning `WARNING: Max 1024 open files allowed, minimum of 40000 recommended.` This is just a warning, not an error, and can either be [repaired](https://stackoverflow.com/questions/20924596/neo4j-warning-max-1024-open-files-allowed-minimum-of-40-000-recommended-see-t?noredirect=1&lq=1) or ignored. 
-2. Open a web browser and browse to `localhost:7474`
-3. Authenticate the connection. The first time you do this, enter the default password `neo4j`. You will be prompted to set your own password. 
-4. In the Neo4j editor, clear the graph: `MATCH (n) DETACH DELETE n`
-5. Enter `:play Movies` to bring up the sample movie database. 
-6. There should be a prompt telling you to click on the boxed code, bringing it into the editor. Play the create statements, creating 38 movie nodes and 131 person nodes. 
+7. Start Neo4j via Terminal: `sudo neo4j start`. You may see the warning `WARNING: Max 1024 open files allowed, minimum of 40000 recommended.` This is just a warning, not an error, and can either be [repaired](https://stackoverflow.com/questions/20924596/neo4j-warning-max-1024-open-files-allowed-minimum-of-40-000-recommended-see-t?noredirect=1&lq=1) or ignored. 
+8. Open a web browser and browse to `localhost:7474`
+9. Authenticate the connection. The first time you do this, enter the default password `neo4j`. You will be prompted to set your own password. 
+
+### Load the sample movie database:
+
+10. In the Neo4j editor, clear the graph: `MATCH (n) DETACH DELETE n`
+11. Enter `:play Movies` to bring up the sample movie database. 
+12. There should be a prompt telling you to click on the boxed code, bringing it into the editor. Play the create statements, creating 38 movie nodes and 131 person nodes. 

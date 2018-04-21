@@ -37,20 +37,34 @@ app.get('/', function(req, res) {
 			});
 			// Connect to database, get persons
 			session
-				.run('MATCH (n:Person) RETURN n LIMIT 40')
+				.run('MATCH (p:Person)-[r]-(q) return p,type(r),q')
 				.then(function(result2) {
-					var personArr = [];
+					var personDict = {};
 					result2.records.forEach(function(record) {
-						personArr.push({
-							id: record._fields[0].identity.low,
-							name: record._fields[0].properties.name
-						});
+						// Get person's name and relationship
+						var name = record._fields[0].properties.name;
+						var relationship = record._fields[1];
+						
+						// Get details based on type of relationship
+						var detail;
+						if (relationship == "FOLLOWS") {
+							detail = relationship + " " + record._fields[2].properties.name;
+						} else {
+							detail = relationship + " " + record._fields[2].properties.title;
+						}
+
+						// Add person info to obj
+						if (name in personDict) {
+							personDict[name].push(detail);
+						} else {
+							personDict[name] = [detail];
+						}
 					});
 
 					// Render view with movies and persons
 					res.render('index', {
 						movies: movieArr,
-						persons: personArr
+						persons: personDict
 					});
 				});
 		}).catch(function(err) {
@@ -138,7 +152,7 @@ app.post('/movie/director/add',function(req,res) {
 });
 
 // Serve app on port 3000
-app.listen(5000);
-console.log('Server started on port 5000');
+app.listen(7000);
+console.log('Server started on port 7000');
 
 module.exports = app;

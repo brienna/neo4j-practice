@@ -47,8 +47,39 @@
 </ul>
 
 <h3>Persons</h3>
+<p>Click on a person to show or hide details.</p>
 <ul>
-<% persons.forEach(function(person) { %>
-	<li><%= person.name %></li>
-<% }) %>
-</ul>
+<% Object.keys(persons).forEach(function(person) { %>
+	<li><%= person %></li>
+	<ul class="hide">
+		<% persons[person].forEach(function(detail) { %>
+			<li><%= detail %></li>
+		<% }) %>
+	</ul>
+<% }); %>
+
+<style>
+	.hide {
+		display: none;
+	}
+	li:hover {
+		background-color: lightgray;
+	}
+</style>
+
+<script>
+	window.onload = function() {
+		// Show or hide person details
+		var listItems = document.getElementsByTagName('li');
+		for (var i = 0; i < listItems.length; i++) {
+			listItems[i].addEventListener('click', function() {
+				var details = this.nextElementSibling;
+				if (details.classList.contains('hide')) {
+					details.classList.remove('hide');
+				} else {
+					details.classList.add('hide');
+				}
+			});
+		}
+	};
+</script>
