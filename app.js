@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect to neo4j
-var driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'neirage')); // ENTER YOUR PASSWORD HERE, 'STUDENT' FOR LAB COMPUTERS
+var driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'neirage'));
 var session = driver.session();
 
 // Set a route to home page
