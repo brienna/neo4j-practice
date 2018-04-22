@@ -65,6 +65,7 @@
 <% Object.keys(persons).forEach(function(person) { %>
 	<li>
 		<p class="detail"><%= person %></p>
+		<a href="/person/remove?name=<%= person %>">Remove</a>
 	</li>
 	<ul class="hide">
 		<% persons[person].forEach(function(detail) { %>

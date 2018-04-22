@@ -50,7 +50,7 @@ app.get('/', function(req, res) {
 						// Get person's name and relationship
 						var name = record._fields[0].properties.name;
 						var relationship = record._fields[1];
-						
+						console.log(record._fields[0].properties);
 						// Get details based on type of relationship
 						var detail;
 						if (relationship == "FOLLOWS") {
@@ -164,6 +164,21 @@ app.get('/movie/remove', function(req, res) {
 
 	session
 		.run('MATCH (n:Movie) where n.title = {titleParam} and n.released = {yearParam} detach delete n', {titleParam: title, yearParam: year})
+		.then(function(result) {
+			res.redirect('/');
+			session.close();
+		})
+		.catch(function(err) {
+			console.log(err);
+		})
+});
+
+// Remove a person when user clicks "Remove" next to person item
+app.get('/person/remove', function(req, res) {
+	name = req.query.name;
+
+	session
+		.run('MATCH (n:Person) where n.name = {nameParam} detach delete n', {nameParam: name})
 		.then(function(result) {
 			res.redirect('/');
 			session.close();
