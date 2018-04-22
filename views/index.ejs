@@ -47,9 +47,12 @@
 <p>Click on a movie to show or hide details.</p>
 <ul>
 <% Object.keys(movies).forEach(function(movie) { %>
-	<li><%= movie %></li>
+	<li>
+		<p class="detail"><%= movie %></p>
+		<a href="/movie/remove?title=<%= movie %>&year=<%= movies[movie].year %>">Remove</a>
+	</li>
 	<ul class="hide">
-		<% movies[movie].forEach(function(detail) { %>
+		<% movies[movie].details.forEach(function(detail) { %>
 			<li><%= detail %></li>
 		<% }) %>
 	</ul>
@@ -60,7 +63,9 @@
 <p>Click on a person to show or hide details.</p>
 <ul>
 <% Object.keys(persons).forEach(function(person) { %>
-	<li><%= person %></li>
+	<li>
+		<p class="detail"><%= person %></p>
+	</li>
 	<ul class="hide">
 		<% persons[person].forEach(function(detail) { %>
 			<li><%= detail %></li>
@@ -73,19 +78,32 @@
 	.hide {
 		display: none;
 	}
-	li:hover {
+	.detail:hover {
 		background-color: lightgray;
 		cursor: pointer;
+	}
+	.detail {
+		margin: 0;
+		padding: 0;
+		display: inline-block;
+		position: absolute;
+	}
+	li {
+		position: relative;
+	}
+	a {
+		position: absolute;
+		right: 0;
 	}
 </style>
 
 <script>
 	window.onload = function() {
 		// Show or hide person details
-		var listItems = document.getElementsByTagName('li');
+		var listItems = document.getElementsByClassName('detail');
 		for (var i = 0; i < listItems.length; i++) {
 			listItems[i].addEventListener('click', function() {
-				var details = this.nextElementSibling;
+				var details = this.parentNode.nextElementSibling;
 				if (details.classList.contains('hide')) {
 					details.classList.remove('hide');
 				} else {

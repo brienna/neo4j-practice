@@ -36,12 +36,10 @@ app.get('/', function(req, res) {
 				var person = record._fields[2].properties.name;
 				var detail = person + " " + relationship;
 
-				// Add person info to obj
-				if (title in movieDict) {
-					movieDict[title].push(detail);
-				} else {
-					movieDict[title] = [detail];
-				}
+				// Set movie id and details
+				movieDict[title] = {id: "", details: []};
+				movieDict[title].year = year;
+				movieDict[title].details.push(detail);
 			});
 			// Connect to database, get persons
 			session
@@ -127,14 +125,14 @@ app.post('/movie/actor/add',function(req,res) {
 	var title = req.body.title;
 	var name = req.body.name;
 	session
-	.run('MATCH (p:Person {name:{nameParam}}),(m:Movie{title:{titleParam}}) MERGE (p)-[:ACTED_IN]-(m) RETURN p,m', { titleParam: title, nameParam: name })
-	.then(function(result) { 
-		res.redirect('/');
-		session.close();
-	})
-	.catch(function(err) { 
-		console.log(err)
-	});
+		.run('MATCH (p:Person {name:{nameParam}}),(m:Movie{title:{titleParam}}) MERGE (p)-[:ACTED_IN]-(m) RETURN p,m', { titleParam: title, nameParam: name })
+		.then(function(result) { 
+			res.redirect('/');
+			session.close();
+		})
+		.catch(function(err) { 
+			console.log(err)
+		});
 });
 
 /* 
@@ -149,14 +147,30 @@ app.post('/movie/director/add',function(req,res) {
 	var title = req.body.title;
 	var name = req.body.name;
 	session
-	.run('MATCH (p:Person {name:{nameParam}}),(m:Movie{title:{titleParam}}) MERGE (p)-[:DIRECTED]-(m) RETURN p,m', { titleParam: title, nameParam: name })
-	.then(function(result) { 
-		res.redirect('/');
-		session.close();
-	})
-	.catch(function(err) { 
-		console.log(err)
-	});
+		.run('MATCH (p:Person {name:{nameParam}}),(m:Movie{title:{titleParam}}) MERGE (p)-[:DIRECTED]-(m) RETURN p,m', { titleParam: title, nameParam: name })
+		.then(function(result) { 
+			res.redirect('/');
+			session.close();
+		})
+		.catch(function(err) { 
+			console.log(err)
+		});
+});
+
+// Remove a movie when user clicks "Remove" next to movie item
+app.get('/movie/remove', function(req, res) {
+	title = req.query.title;
+	year = parseInt(req.query.year);
+
+	session
+		.run('MATCH (n:Movie) where n.title = {titleParam} and n.released = {yearParam} detach delete n', {titleParam: title, yearParam: year})
+		.then(function(result) {
+			res.redirect('/');
+			session.close();
+		})
+		.catch(function(err) {
+			console.log(err);
+		})
 });
 
 // Serve app on port 3000
