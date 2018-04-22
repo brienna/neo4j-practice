@@ -25,6 +25,8 @@ var session = driver.session();
 var path;
 var person1;
 var person2;
+var movie1;
+var movie2;
 
 // Set a route to home page
 app.get('/', function(req, res) {
@@ -75,7 +77,9 @@ app.get('/', function(req, res) {
 						persons: personDict,
 						path: path,
 						person1: person1,
-						person2: person2
+						person2: person2,
+						movie1: movie1,
+						movie2: movie2
 					});
 				});
 		}).catch(function(err) {
@@ -192,7 +196,7 @@ app.get('/person/remove', function(req, res) {
 		})
 });
 
-// Finds the shortest path between two items
+// Finds the shortest path between two persons
 app.post('/person/find_shortest_path', function(req, res) {
 	path = "";
 	person1 = req.body.person1;
@@ -211,6 +215,33 @@ app.post('/person/find_shortest_path', function(req, res) {
 				}
 			}
 			path = path + person2;
+			res.redirect('/');
+			session.close();
+		})
+		.catch(function(err) {
+			console.log(err);
+		});
+});
+
+// Finds the shortest path between two movies
+app.post('/movie/find_shortest_path', function(req, res) {
+	path = "";
+	movie1 = req.body.movie1;
+	movie2 = req.body.movie2;
+	
+	session
+		.run('MATCH (m:Movie { title: {titleParam1}}),(n:Movie { title: {titleParam2} }), p = shortestPath((m)-[*]-(n)) RETURN p', {titleParam1: movie1, titleParam2: movie2})
+		.then(function(result) {
+			var segments = result.records[0]._fields[0].segments;
+			for (var i = 0; i < segments.length; i++) {
+				if (segments[i].start.properties.name) {
+					path = path + segments[i].start.properties.name + " > ";
+				} 
+				if (segments[i].start.properties.title) {
+					path = path + segments[i].start.properties.title + " > ";
+				}
+			}
+			path = path + movie2;
 			res.redirect('/');
 			session.close();
 		})

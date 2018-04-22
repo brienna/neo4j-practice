@@ -44,7 +44,21 @@
 </form>
 
 <h3>Movies</h3>
-<p>Enter two movies to see the shortest path between them.</p>
+<form method="post" action="/movie/find_shortest_path">
+	<p>Enter two movies to see the shortest path between them.</p>
+	<label>Movie 1</label><br>
+	<input type="text" name="movie1">
+	<br>
+	<label>Movie 2</label><br>
+	<input type="text" name="movie2">
+	<br><br>
+	<input type="submit" value="submit">
+
+	<%if (path != null && movie1 != null && movie2 != null) { %>
+		<p>Shortest path between <%= movie1 %> and <%= movie2 %>: <%= path %></p>
+	<% } %>
+</form>
+
 <ul>
 <% Object.keys(movies).forEach(function(movie) { %>
 	<li>
