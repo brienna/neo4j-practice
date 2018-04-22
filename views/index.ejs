@@ -1,7 +1,7 @@
-<h3>Add Movie</h3>
-<p>Add a movie to the database.</p>
-<p>Note: You will also need to set at least one person as an actor or director of the movie.</p>
 <form method="post" action="/movie/add">
+	<h3>Add Movie</h3>
+	<p>Add a movie to the database.</p>
+	<p>Note: You will also need to set at least one person as an actor or director of the movie.</p>
 	<label>Movie Name</label><br>
 	<input type="text" name="title">
 	<br>
@@ -11,19 +11,19 @@
 	<input type="submit" value="submit">
 </form>
 
-<h3>Add Person</h3>
-<p>Add a person to the database.</p>
-<p>Note: You will also need to set the person as an actor or a director of a movie.</p>
 <form method="post" action="/person/add">
+	<h3>Add Person</h3>
+	<p>Add a person to the database.</p>
+	<p>Note: You will also need to set the person as an actor or a director of a movie.</p>
 	<label>Person Name</label><br>
 	<input type="text" name="name">
 	<br><br>
 	<input type="submit" value="submit">
 </form>
 
-<h3>Set Actor</h3>
-<p>Set an ACTED_IN relationship between a person and a movie that both already exist in the database.</p>
 <form method="post" action="/movie/actor/add">
+	<h3>Set Actor</h3>
+	<p>Set an ACTED_IN relationship between a person and a movie that both already exist in the database.</p>
 	<label>Movie Title</label><br> 
 	<input type="text" name="title">
 	<br>
@@ -32,9 +32,9 @@
  	<input type="submit" value="submit"> 
 </form>
 
-<h3>Set Director</h3>
-<p>Set a DIRECTED relationship between a person and a movie that both already exist in the database.</p>
 <form method="post" action="/movie/director/add">
+	<h3>Set Director</h3>
+	<p>Set a DIRECTED relationship between a person and a movie that both already exist in the database.</p>
 	<label>Movie Title</label><br> 
 	<input type="text" name="title">
 	<br>
@@ -44,12 +44,13 @@
 </form>
 
 <h3>Movies</h3>
-<p>Click on a movie to show or hide details.</p>
+<p>Enter two movies to see the shortest path between them.</p>
 <ul>
 <% Object.keys(movies).forEach(function(movie) { %>
 	<li>
-		<p class="detail"><%= movie %></p>
-		<a href="/movie/remove?title=<%= movie %>&year=<%= movies[movie].year %>">Remove</a>
+		<a href="/movie/remove?title=<%= movie %>&year=<%= movies[movie].year %>">x</a> |
+		<p class="link detail">details</p> | 
+		<p class="item"><%= movie %></p>
 	</li>
 	<ul class="hide">
 		<% movies[movie].details.forEach(function(detail) { %>
@@ -59,13 +60,29 @@
 <% }); %>
 </ul>
 
+
 <h3>Persons</h3>
-<p>Click on a person to show or hide details.</p>
+<form method="post" action="/person/find_shortest_path">
+	<p>Enter two persons to see the shortest path between them.</p>
+	<label>Person 1</label><br>
+	<input type="text" name="person1">
+	<br>
+	<label>Person 2</label><br>
+	<input type="text" name="person2">
+	<br><br>
+	<input type="submit" value="submit">
+
+	<%if (path != null && person1 != null && person2 != null) { %>
+		<p>Shortest path between <%= person1 %> and <%= person2 %>: <%= path %></p>
+	<% } %>
+</form>
+
 <ul>
 <% Object.keys(persons).forEach(function(person) { %>
 	<li>
-		<p class="detail"><%= person %></p>
-		<a href="/person/remove?name=<%= person %>">Remove</a>
+		<a href="/person/remove?name=<%= person %>">x</a> |
+		<p class="link detail">details</p> |
+		<p class="item"><%= person %></p>
 	</li>
 	<ul class="hide">
 		<% persons[person].forEach(function(detail) { %>
@@ -75,27 +92,45 @@
 <% }); %>
 </ul>
 
+
 <style>
+	body {
+		font-size: 12px;
+	}
+	ul {
+		width: 75%;
+	}
 	.hide {
 		display: none;
 	}
-	.detail:hover {
-		background-color: lightgray;
-		cursor: pointer;
-	}
-	.detail {
+	ul p {
 		margin: 0;
 		padding: 0;
 		display: inline-block;
-		position: absolute;
 	}
-	li {
-		position: relative;
+	.link {
+		color: blue;
+		cursor: pointer;
 	}
 	a {
-		position: absolute;
-		right: 0;
+		text-decoration: none;
 	}
+	a:hover, .link:hover {
+		background-color: lightgray;
+	}
+	form > ul {
+		list-style-type: none;
+	}
+	form {
+		border: 1px black solid;
+		width: 50%;
+		padding: 15px;
+	}
+	.selected {
+		background-color: red;
+		color: black;
+	}
+
 </style>
 
 <script>
@@ -113,4 +148,5 @@
 			});
 		}
 	};
+
 </script>

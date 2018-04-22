@@ -21,6 +21,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 var driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'neirage'));
 var session = driver.session();
 
+// Global variable
+var path;
+var person1;
+var person2;
+
 // Set a route to home page
 app.get('/', function(req, res) {
 	// Connect to database, get movies
@@ -35,7 +40,6 @@ app.get('/', function(req, res) {
 				var relationship = record._fields[1];
 				var person = record._fields[2].properties.name;
 				var detail = person + " " + relationship;
-
 				// Set movie id and details
 				movieDict[title] = {id: "", details: []};
 				movieDict[title].year = year;
@@ -50,7 +54,6 @@ app.get('/', function(req, res) {
 						// Get person's name and relationship
 						var name = record._fields[0].properties.name;
 						var relationship = record._fields[1];
-						console.log(record._fields[0].properties);
 						// Get details based on type of relationship
 						var detail;
 						if (relationship == "FOLLOWS") {
@@ -58,7 +61,6 @@ app.get('/', function(req, res) {
 						} else {
 							detail = relationship + " " + record._fields[2].properties.title;
 						}
-
 						// Add person info to obj
 						if (name in personDict) {
 							personDict[name].push(detail);
@@ -70,7 +72,10 @@ app.get('/', function(req, res) {
 					// Render view with movies and persons
 					res.render('index', {
 						movies: movieDict,
-						persons: personDict
+						persons: personDict,
+						path: path,
+						person1: person1,
+						person2: person2
 					});
 				});
 		}).catch(function(err) {
@@ -81,11 +86,11 @@ app.get('/', function(req, res) {
 // Action to take when user submits form to add movie
 app.post('/movie/add', function(req, res) {
 	var title = req.body.title; // from html input
-	var year = req.body.year; // from html input
+	var year = parseInt(req.body.year); // from html input
 	
 	// Connect to database, create movie with title and year
 	session
-		.run('CREATE (n:Movie {title: {titleParam}, released:{yearParam}}) RETURN n.title',
+		.run('CREATE (n:Movie {title: {titleParam}, released:{yearParam}}) RETURN n.title, n.released',
 			{ titleParam: title, yearParam: year })
 		.then(function(result) {
 			res.redirect('/');
@@ -161,7 +166,6 @@ app.post('/movie/director/add',function(req,res) {
 app.get('/movie/remove', function(req, res) {
 	title = req.query.title;
 	year = parseInt(req.query.year);
-
 	session
 		.run('MATCH (n:Movie) where n.title = {titleParam} and n.released = {yearParam} detach delete n', {titleParam: title, yearParam: year})
 		.then(function(result) {
@@ -170,7 +174,7 @@ app.get('/movie/remove', function(req, res) {
 		})
 		.catch(function(err) {
 			console.log(err);
-		})
+		});
 });
 
 // Remove a person when user clicks "Remove" next to person item
@@ -187,6 +191,35 @@ app.get('/person/remove', function(req, res) {
 			console.log(err);
 		})
 });
+
+// Finds the shortest path between two items
+app.post('/person/find_shortest_path', function(req, res) {
+	path = "";
+	person1 = req.body.person1;
+	person2 = req.body.person2;
+	
+	session
+		.run('MATCH (m:Person { name: {nameParam1}}),(n:Person { name: {nameParam2} }), p = shortestPath((m)-[*]-(n)) RETURN p', {nameParam1: person1, nameParam2: person2})
+		.then(function(result) {
+			var segments = result.records[0]._fields[0].segments;
+			for (var i = 0; i < segments.length; i++) {
+				if (segments[i].start.properties.name) {
+					path = path + segments[i].start.properties.name + " > ";
+				} 
+				if (segments[i].start.properties.title) {
+					path = path + segments[i].start.properties.title + " > ";
+				}
+			}
+			path = path + person2;
+			res.redirect('/');
+			session.close();
+		})
+		.catch(function(err) {
+			console.log(err);
+		});
+});
+
+// MATCH (m:Person { name: 'Tom Hanks'}),(n:Person { name: 'John Cusack' }), p = shortestPath((m)-[*]-(n)) RETURN p
 
 // Serve app on port 3000
 app.listen(7000);
