@@ -1,166 +1,187 @@
 <form method="post" action="/movie/add">
-	<h3>Add Movie</h3>
-	<p>Add a movie to the database.</p>
-	<p>Note: You will also need to set at least one person as an actor or director of the movie.</p>
-	<label>Movie Name</label><br>
-	<input type="text" name="title">
-	<br>
-	<label>Year</label><br>
-	<input type="text" name="year">
-	<br><br>
-	<input type="submit" value="submit">
+    <h3>Add Movie</h3>
+    <p>Add a movie to the database.</p>
+    <p>Note: You will also need to set at least one person as an actor or director of the movie.</p>
+    <label>Movie Name</label><br>
+    <input type="text" name="title">
+    <br>
+    <label>Year</label><br>
+    <input type="text" name="year">
+    <br><br>
+    <input type="submit" value="submit">
 </form>
 
 <form method="post" action="/person/add">
-	<h3>Add Person</h3>
-	<p>Add a person to the database.</p>
-	<p>Note: You will also need to set the person as an actor or a director of a movie.</p>
-	<label>Person Name</label><br>
-	<input type="text" name="name">
-	<br><br>
-	<input type="submit" value="submit">
+    <h3>Add Person</h3>
+    <p>Add a person to the database.</p>
+    <p>Note: You will also need to set the person as an actor or a director of a movie.</p>
+    <label>Person Name</label><br>
+    <input type="text" name="name">
+    <br><br>
+    <input type="submit" value="submit">
 </form>
 
 <form method="post" action="/movie/actor/add">
-	<h3>Set Actor</h3>
-	<p>Set an ACTED_IN relationship between a person and a movie that both already exist in the database.</p>
-	<label>Movie Title</label><br> 
-	<input type="text" name="title">
-	<br>
-	<label>Actor Name</label><br> 
-	<input type="text" name="name"> <br><br>
- 	<input type="submit" value="submit"> 
+    <h3>Set Actor</h3>
+    <p>Set an ACTED_IN relationship between a person and a movie that both already exist in the database.</p>
+    <label>Movie Title</label><br> 
+    <input type="text" name="title">
+    <br>
+    <label>Actor Name</label><br> 
+    <input type="text" name="name"> <br><br>
+    <input type="submit" value="submit"> 
 </form>
 
 <form method="post" action="/movie/director/add">
-	<h3>Set Director</h3>
-	<p>Set a DIRECTED relationship between a person and a movie that both already exist in the database.</p>
-	<label>Movie Title</label><br> 
-	<input type="text" name="title">
-	<br>
-	<label>Director Name</label><br> 
-	<input type="text" name="name"> <br><br>
- 	<input type="submit" value="submit"> 
+    <h3>Set Director</h3>
+    <p>Set a DIRECTED relationship between a person and a movie that both already exist in the database.</p>
+    <label>Movie Title</label><br> 
+    <input type="text" name="title">
+    <br>
+    <label>Director Name</label><br> 
+    <input type="text" name="name"> <br><br>
+    <input type="submit" value="submit"> 
 </form>
 
 <h3>Movies</h3>
 <form method="post" action="/movie/find_shortest_path">
-	<p>Enter two movies to see the shortest path between them.</p>
-	<label>Movie 1</label><br>
-	<input type="text" name="movie1">
-	<br>
-	<label>Movie 2</label><br>
-	<input type="text" name="movie2">
-	<br><br>
-	<input type="submit" value="submit">
+    <p>Enter two movies to see the shortest path between them.</p>
+    <label>Movie 1</label><br>
+    <input type="text" name="movie1">
+    <br>
+    <label>Movie 2</label><br>
+    <input type="text" name="movie2">
+    <br><br>
+    <input type="submit" value="submit">
 
-	<%if (path != null && movie1 != null && movie2 != null) { %>
-		<p>Shortest path between <%= movie1 %> and <%= movie2 %>: <%= path %></p>
-	<% } %>
+    <%if (shortestPath != null && movie1 != null && movie2 != null) { %>
+        <p>Shortest path between <%= movie1 %> and <%= movie2 %>: <%= shortestPath %></p>
+    <% } %>
+</form>
+
+<form method="post" action="/movie/update">
+    <h3>Update Movie</h3>
+    <p>Enter an existing movie and the updated year of release.</p>
+    <label>Movie Name</label><br>
+    <input type="text" name="movie"><br><br>
+    <label>Updated Year of Release</label><br>
+    <input type="text" name="year">
+    <br><br>
+    <input type="submit" value="submit">
 </form>
 
 <ul>
 <% Object.keys(movies).forEach(function(movie) { %>
-	<li>
-		<a href="/movie/remove?title=<%= movie %>&year=<%= movies[movie].year %>">x</a> |
-		<p class="link detail">details</p> | 
-		<p class="item"><%= movie %></p>
-	</li>
-	<ul class="hide">
-		<% movies[movie].details.forEach(function(detail) { %>
-			<li><%= detail %></li>
-		<% }) %>
-	</ul>
+    <li>
+        <a href="/movie/remove?title=<%= movie %>&year=<%= movies[movie].year %>">x</a> |
+        <p class="link detail">details</p> | 
+        <p class="item"><%= movie %></p>
+    </li>
+    <ul class="hide">
+        <li>Year: <%= movies[movie].year %></li>
+        <% movies[movie].details.forEach(function(detail) { %>
+            <li><%= detail %></li>
+        <% }) %>
+    </ul>
 <% }); %>
 </ul>
 
-
 <h3>Persons</h3>
 <form method="post" action="/person/find_shortest_path">
-	<p>Enter two persons to see the shortest path between them.</p>
-	<label>Person 1</label><br>
-	<input type="text" name="person1">
-	<br>
-	<label>Person 2</label><br>
-	<input type="text" name="person2">
-	<br><br>
-	<input type="submit" value="submit">
+    <p>Enter two persons to see the shortest path between them.</p>
+    <label>Person 1</label><br>
+    <input type="text" name="person1">
+    <br>
+    <label>Person 2</label><br>
+    <input type="text" name="person2">
+    <br><br>
+    <input type="submit" value="submit">
 
-	<%if (path != null && person1 != null && person2 != null) { %>
-		<p>Shortest path between <%= person1 %> and <%= person2 %>: <%= path %></p>
-	<% } %>
+    <%if (shortestPath != null && person1 != null && person2 != null) { %>
+        <p>Shortest path between <%= person1 %> and <%= person2 %>: <%= shortestPath %></p>
+    <% } %>
+</form>
+
+<form method="post" action="/person/update">
+    <h3>Update Person</h3>
+    <p>Enter an existing person and the updated year of birth.</p>
+    <label>Person Name</label><br>
+    <input type="text" name="name"><br>
+    <label>Updated Year of Birth</label><br>
+    <input type="text" name="yob">
+    <br><br>
+    <input type="submit" value="submit">
 </form>
 
 <ul>
 <% Object.keys(persons).forEach(function(person) { %>
-	<li>
-		<a href="/person/remove?name=<%= person %>">x</a> |
-		<p class="link detail">details</p> |
-		<p class="item"><%= person %></p>
-	</li>
-	<ul class="hide">
-		<% persons[person].forEach(function(detail) { %>
-			<li><%= detail %></li>
-		<% }) %>
-	</ul>
+    <li>
+        <a href="/person/remove?name=<%= person %>">x</a> |
+        <p class="link detail">details</p> |
+        <p class="item"><%= person %></p>
+    </li>
+    <ul class="hide">
+        <li>Year of birth: <%= persons[person].yob %></li>
+        <% persons[person].details.forEach(function(detail) { %>
+            <li><%= detail %></li>
+        <% }) %>
+    </ul>
 <% }); %>
 </ul>
 
 
 <style>
-	body {
-		font-size: 12px;
-	}
-	ul {
-		width: 75%;
-	}
-	.hide {
-		display: none;
-	}
-	ul p {
-		margin: 0;
-		padding: 0;
-		display: inline-block;
-	}
-	.link {
-		color: blue;
-		cursor: pointer;
-	}
-	a {
-		text-decoration: none;
-	}
-	a:hover, .link:hover {
-		background-color: lightgray;
-	}
-	form > ul {
-		list-style-type: none;
-	}
-	form {
-		border: 1px black solid;
-		width: 50%;
-		padding: 15px;
-	}
-	.selected {
-		background-color: red;
-		color: black;
-	}
-
+    body {
+        font-size: 12px;
+    }
+    ul {
+        width: 75%;
+    }
+    .hide {
+        display: none;
+    }
+    ul p {
+        margin: 0;
+        padding: 0;
+        display: inline-block;
+    }
+    .link {
+        color: blue;
+        cursor: pointer;
+    }
+    a {
+        text-decoration: none;
+    }
+    a:hover, .link:hover {
+        background-color: lightgray;
+    }
+    form > ul {
+        list-style-type: none;
+    }
+    form {
+        border: 1px black solid;
+        width: 50%;
+        padding: 15px;
+    }
+    .selected {
+        background-color: red;
+        color: black;
+    }
 </style>
 
 <script>
-	window.onload = function() {
-		// Show or hide person details
-		var listItems = document.getElementsByClassName('detail');
-		for (var i = 0; i < listItems.length; i++) {
-			listItems[i].addEventListener('click', function() {
-				var details = this.parentNode.nextElementSibling;
-				if (details.classList.contains('hide')) {
-					details.classList.remove('hide');
-				} else {
-					details.classList.add('hide');
-				}
-			});
-		}
-	};
-
+    window.onload = function() {
+        // Show or hide person details
+        var listItems = document.getElementsByClassName('detail');
+        for (var i = 0; i < listItems.length; i++) {
+            listItems[i].addEventListener('click', function() {
+                var details = this.parentNode.nextElementSibling;
+                if (details.classList.contains('hide')) {
+                    details.classList.remove('hide');
+                } else {
+                    details.classList.add('hide');
+                }
+            });
+        }
+    };
 </script>
