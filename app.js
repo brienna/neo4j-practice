@@ -209,8 +209,8 @@ app.get('/person/remove', function(req, res) {
 // Finds the shortest path between two persons
 app.post('/person/find_shortest_path', function(req, res) {
     shortestPath = "";
-    person1 = req.body.person1;
-    person2 = req.body.person2;
+    person1 = req.body.person1.trim();
+    person2 = req.body.person2.trim();
     
     session
         .run('MATCH (m:Person { name: {nameParam1}}),(n:Person { name: {nameParam2} }), p = shortestPath((m)-[*]-(n)) RETURN p', {nameParam1: person1, nameParam2: person2})
@@ -236,8 +236,8 @@ app.post('/person/find_shortest_path', function(req, res) {
 // Finds the shortest path between two movies
 app.post('/movie/find_shortest_path', function(req, res) {
     shortestPath = "";
-    movie1 = req.body.movie1;
-    movie2 = req.body.movie2;
+    movie1 = req.body.movie1.trim();
+    movie2 = req.body.movie2.trim();
     
     session
         .run('MATCH (m:Movie { title: {titleParam1}}),(n:Movie { title: {titleParam2} }), p = shortestPath((m)-[*]-(n)) RETURN p', {titleParam1: movie1, titleParam2: movie2})
